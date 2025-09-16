@@ -227,7 +227,7 @@ if df is not None and not df.empty:
     question = st.text_area(
         "💬 Your Question",
         value=st.session_state.selected_prompt,
-        placeholder="Example: What are people saying about BYD ?"
+        placeholder="Example: What are people saying about?"
     )
 
     if st.button("🚀 วิเคราะห์ด้วย Gemini AI"):
