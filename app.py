@@ -241,7 +241,6 @@ if df is not None and not df.empty:
                 st.success("✅ วิเคราะห์สำเร็จ")
                 st.subheader("📊 คำตอบจาก Gemini:")
                 st.write(answer)
-                question = st.text_area("💬 Your Question",value=st.session_state.selected_prompt,placeholder="Example: What are people saying about?")
 
                 # Save history
                 if "qa_history" not in st.session_state:
