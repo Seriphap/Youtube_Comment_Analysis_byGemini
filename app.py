@@ -251,7 +251,6 @@ if df is not None and not df.empty:
                 })
 
                 # Clear selected suggestion
-                st.session_state.question = ""
                 st.session_state.selected_prompt = ""
                 st.rerun()
 
