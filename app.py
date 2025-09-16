@@ -7,15 +7,6 @@ from comment_fetcher import get_all_comments
 from google import genai
 
 # -----------------------------
-# 🔐 Load API keys from secrets
-# -----------------------------
-# เพิ่มใน .streamlit/secrets.toml:
-# YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY"
-# GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-YOUTUBE_API_KEY = secrets["YOUTUBE_API_KEY"]
-GEMINI_API_KEY = secrets["GEMINI_API_KEY"]
-
-# -----------------------------
 # 🤖 Gemini Client
 # -----------------------------
 client = genai.Client(api_key=GEMINI_API_KEY)
