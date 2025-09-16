@@ -252,7 +252,6 @@ if df is not None and not df.empty:
 
                 # Clear selected suggestion
                 st.session_state.selected_prompt = ""
-                st.rerun()
 
             except Exception as e:
                 st.error(f"❌ เกิดข้อผิดพลาดจาก Gemini: {e}")
