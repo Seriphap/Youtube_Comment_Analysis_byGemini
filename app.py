@@ -140,7 +140,9 @@ video_id = extract_single_video_id(video_input) if video_input else None
 # แสดงตัวอย่างวิดีโอ
 if video_id:
     st.subheader("▶️ Video Reference")
-    st.video(f"https://www.youtube.com/watch?v={video_id}")
+    Col1, Col2 : st.column(2)
+    with Col1:
+        st.video(f"https://www.youtube.com/watch?v={video_id}")
     st.caption(f"Video — `{video_id}`")
 
 # -----------------------------
@@ -176,7 +178,7 @@ if fetch_btn:
 
             # สรุปข้อมูลเบื้องต้น / ตัวอย่างข้อมูล
             with st.expander("🔎 ตัวอย่างข้อมูล"):
-                st.dataframe(df.head, use_container_width=True)
+                st.dataframe(df, use_container_width=True)
 
             # ปุ่มดาวน์โหลด CSV
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
