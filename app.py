@@ -140,7 +140,7 @@ video_id = extract_single_video_id(video_input) if video_input else None
 # แสดงตัวอย่างวิดีโอ
 if video_id:
     st.subheader("▶️ Video Reference")
-    Col1, Col2 = st.column(2)
+    Col1, Col2 = st.columns(2)
     with Col1:
         st.video(f"https://www.youtube.com/watch?v={video_id}")
     st.caption(f"Video — `{video_id}`")
