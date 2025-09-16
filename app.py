@@ -114,7 +114,7 @@ st.set_page_config(
     page_icon="🤖",
     layout="wide"
 )
-st.header("🤖 Analysis of BYD YouTube Comments Using Gemini-2.0-Flash (Single Video)")
+st.header("🕵️‍♂️ Analysis of YouTube Comments Using Gemini-2.0-Flash")
 
 # -----------------------------
 # 📚 Sidebar — Q&A History
