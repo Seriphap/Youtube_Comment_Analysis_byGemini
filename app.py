@@ -157,12 +157,11 @@ if fetch_btn:
 
     with st.spinner("⏳ กำลังดึงความคิดเห็นทั้งหมดจาก YouTube..."):
         try:
-            # ดึงเฉพาะ top-level comments เรียงจาก "ล่าสุด"
             df = get_all_comments(
                 video_id,
                 YOUTUBE_API_KEY,
-                include_replies=False,  # ปรับเป็น True ได้ถ้าต้องการ replies ด้วย
-                order="time",           # "time" = ล่าสุดก่อน, "relevance" = ความเกี่ยวข้อง
+                include_replies=False,
+                order="time",
                 save_to_csv=False
             )
 
@@ -170,38 +169,46 @@ if fetch_btn:
                 st.error("ไม่พบความคิดเห็น หรือวิดีโอนี้อาจปิดการแสดงความคิดเห็น")
                 st.stop()
 
-            # เก็บใน session สำหรับใช้ถาม AI ต่อ
+            # เก็บใน session
             st.session_state.latest_df = df
             st.session_state.latest_video_id = video_id
 
+            # เก็บ timestamp ไว้เพื่อให้ชื่อไฟล์คงที่ข้ามการ rerun
+            st.session_state.latest_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+
             st.success(f"✅ ดึงข้อมูลสำเร็จ: {len(df)} ความคิดเห็น จากวิดีโอ {video_id}")
-
-            # สรุปข้อมูลเบื้องต้น / ตัวอย่างข้อมูล
-            with st.expander("🔎 ตัวอย่างข้อมูล"):
-                st.dataframe(df, use_container_width=True)
-
-            # ปุ่มดาวน์โหลด CSV
-            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-            csv_bytes = df.to_csv(index=False).encode("utf-8-sig")
-            st.download_button(
-                "⬇️ Download CSV",
-                data=csv_bytes,
-                file_name=f"youtube_comments_{video_id}_{ts}.csv",
-                mime="text/csv"
-            )
 
         except Exception as e:
             st.error(f"❌ เกิดข้อผิดพลาดในการดึงความคิดเห็น: {e}")
             st.stop()
 
 # -----------------------------
-# 🤖 Ask AI (Gemini)
+# แสดงตัวอย่าง + ปุ่มดาวน์โหลด (อยู่นอก fetch_btn)
 # -----------------------------
 df = st.session_state.get("latest_df")
 if df is not None and not df.empty:
+
+    # สรุปข้อมูลเบื้องต้น / ตัวอย่างข้อมูล
+    with st.expander("🔎 ตัวอย่างข้อมูล"):
+        st.dataframe(df, use_container_width=True)
+
+    # ปุ่มดาวน์โหลด CSV (อยู่ตรงนี้เพื่อไม่หายเวลา rerun)
+    csv_bytes = df.to_csv(index=False).encode("utf-8-sig")
+    ts = st.session_state.get("latest_ts") or datetime.now().strftime("%Y%m%d_%H%M%S")
+    vid = st.session_state.get("latest_video_id", "unknown")
+    st.download_button(
+        "⬇️ Download CSV",
+        data=csv_bytes,
+        file_name=f"youtube_comments_{vid}_{ts}.csv",
+        mime="text/csv",
+        key="download_csv"  # ให้ key คงที่ ป้องกันชนกับปุ่มอื่น ๆ
+    )
+
+    # -----------------------------
+    # 🤖 Ask AI (Gemini)
+    # -----------------------------
     st.subheader("🕵️‍♂️ Ask AI")
 
-    # Suggested Questions
     st.markdown("💡 **Suggested Questions**")
     suggestions = {
         "📈 ผู้ชมรู้สึกอย่างไร? (Sentiment)": "วิเคราะห์ว่าโดยรวมผู้ชมรู้สึกอย่างไรกับวิดีโอนี้ (positive / negative / neutral) พร้อมยกตัวอย่างข้อความสนับสนุน",
