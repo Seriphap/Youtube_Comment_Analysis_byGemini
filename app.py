@@ -12,8 +12,8 @@ from google import genai
 # เพิ่มใน .streamlit/secrets.toml:
 # YOUTUBE_API_KEY = "YOUR_YOUTUBE_API_KEY"
 # GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-YOUTUBE_API_KEY = st.secrets["YOUTUBE_API_KEY"]
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+YOUTUBE_API_KEY = secrets["YOUTUBE_API_KEY"]
+GEMINI_API_KEY = secrets["GEMINI_API_KEY"]
 
 # -----------------------------
 # 🤖 Gemini Client
