@@ -129,7 +129,7 @@ with st.sidebar:
 # -----------------------------
 # 🎯 Single Video Input
 # -----------------------------
-st.subheader("🧩 Input a YouTube Video ID or URL")
+st.subheader("Input a YouTube Video ID or URL")
 video_input = st.text_input(
     "ระบุ YouTube Video ID หรือ URL (1 รายการ)",
     placeholder="เช่น https://youtu.be/OMV9F9zB4KU หรือ OMV9F9zB4KU"
@@ -199,7 +199,7 @@ if fetch_btn:
 # -----------------------------
 df = st.session_state.get("latest_df")
 if df is not None and not df.empty:
-    st.subheader("🤖 Ask AI")
+    st.subheader("🕵️‍♂️ Ask AI")
 
     # Suggested Questions
     st.markdown("💡 **Suggested Questions**")
