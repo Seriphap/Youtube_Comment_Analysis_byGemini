@@ -9,6 +9,10 @@ from google import genai
 # -----------------------------
 # 🤖 Gemini Client
 # -----------------------------
+
+GEMINI_API_KEY ="AIzaSyAIrers-JDhM2oE3P_DN4-sqOTQGMhDKqo"
+YOUTUBE_API_KEY="AIzaSyBUaxRwFGQ5O1Mw7gU886BiC3JYSOYi9YQ"
+
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # -----------------------------
