@@ -129,7 +129,7 @@ with st.sidebar:
 # -----------------------------
 # 🎯 Single Video Input
 # -----------------------------
-st.subheader("🧩 Input a YouTube Video ID or URL (Single)")
+st.subheader("🧩 Input a YouTube Video ID or URL")
 video_input = st.text_input(
     "ระบุ YouTube Video ID หรือ URL (1 รายการ)",
     placeholder="เช่น https://youtu.be/OMV9F9zB4KU หรือ OMV9F9zB4KU"
@@ -146,7 +146,7 @@ if video_id:
 # -----------------------------
 # 📥 Fetch Comments (Always fresh)
 # -----------------------------
-fetch_btn = st.button("🔄 Retrieve the Latest YouTube Comments", type="primary")
+fetch_btn = st.button("🔄 Retrieve the Latest YouTube Comments")
 
 if fetch_btn:
     if not video_id:
