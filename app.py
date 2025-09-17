@@ -79,6 +79,13 @@ def build_prompt(question: str, df: pd.DataFrame, max_chars: int = 30000) -> str
 [ข้อมูลความคิดเห็นจากผู้ชม]
 {comments_text}
 
+
+[ภาษาเอาต์พุต]
+- ตอบเป็นภาษาเดียวกับคำถามของผู้ใช้
+- ถ้าคำถามเป็นภาษาอังกฤษ ให้ตอบเป็นภาษาอังกฤษ
+- ถ้าคำถามเป็นภาษาไทย ให้ตอบเป็นภาษาไทย
+- ห้ามผสมภาษาในคำอธิบาย (ยกเว้นตัวอย่างคอมเมนต์ซึ่งให้คงภาษาต้นฉบับได้)
+
 [แนวทางการสรุป]
 1) ตอบตรงคำถาม พร้อม bullet แบ่งหัวข้อชัดเจน
 2) ยกตัวอย่างคอมเมนต์ที่สนับสนุนข้อสรุป (ย่อและนิรนาม)
@@ -131,8 +138,8 @@ with st.sidebar:
 # -----------------------------
 st.subheader("Input a YouTube Video ID or URL")
 video_input = st.text_input(
-    "ระบุ YouTube Video ID หรือ URL (1 รายการ)",
-    placeholder="เช่น https://youtu.be/OMV9F9zB4KU หรือ OMV9F9zB4KU"
+    "Input YouTube Video ID or URL (Single Video)",
+    placeholder="Example: https://youtu.be/OMV9F9zB4KU or OMV9F9zB4KU"
 )
 
 video_id = extract_single_video_id(video_input) if video_input else None
@@ -152,10 +159,10 @@ fetch_btn = st.button("🔄 Retrieve the Latest YouTube Comments")
 
 if fetch_btn:
     if not video_id:
-        st.warning("กรุณาใส่ Video ID/URL ให้ถูกต้องก่อนดึงความคิดเห็น")
+        st.warning("please correct Video ID/URL before retrieve the youtube comments")
         st.stop()
 
-    with st.spinner("⏳ กำลังดึงความคิดเห็นทั้งหมดจาก YouTube..."):
+    with st.spinner("⏳ loading all comments from YouTube..."):
         try:
             df = get_all_comments(
                 video_id,
@@ -166,7 +173,7 @@ if fetch_btn:
             )
 
             if df is None or df.empty:
-                st.error("ไม่พบความคิดเห็น หรือวิดีโอนี้อาจปิดการแสดงความคิดเห็น")
+                st.error("No comment or The video is not allowed to comments")
                 st.stop()
 
             # เก็บใน session
@@ -176,10 +183,10 @@ if fetch_btn:
             # เก็บ timestamp ไว้เพื่อให้ชื่อไฟล์คงที่ข้ามการ rerun
             st.session_state.latest_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-            st.success(f"✅ ดึงข้อมูลสำเร็จ: {len(df)} ความคิดเห็น จากวิดีโอ {video_id}")
+            st.success(f"✅ Data successfully retrieved: {len(df)} comments from video {video_id}")
 
         except Exception as e:
-            st.error(f"❌ เกิดข้อผิดพลาดในการดึงความคิดเห็น: {e}")
+            st.error(f"❌ An error occurred while retrieving the comments.: {e}")
             st.stop()
 
 # -----------------------------
@@ -189,7 +196,7 @@ df = st.session_state.get("latest_df")
 if df is not None and not df.empty:
 
     # สรุปข้อมูลเบื้องต้น / ตัวอย่างข้อมูล
-    with st.expander("🔎 ตัวอย่างข้อมูล"):
+    with st.expander("🔎 All Comments"):
         st.dataframe(df, use_container_width=True)
 
     # ปุ่มดาวน์โหลด CSV (อยู่ตรงนี้เพื่อไม่หายเวลา rerun)
@@ -214,7 +221,10 @@ if df is not None and not df.empty:
         "📈 ผู้ชมรู้สึกอย่างไร? (Sentiment)": "วิเคราะห์ว่าโดยรวมผู้ชมรู้สึกอย่างไรกับวิดีโอนี้ (positive / negative / neutral) พร้อมยกตัวอย่างข้อความสนับสนุน",
         "💬 คนพูดถึงอะไรบ่อยที่สุด?": "จากความคิดเห็นทั้งหมด ผู้ชมพูดถึงประเด็นใดบ่อยที่สุดในเชิงบวกหรือลบ",
         "🎯 ข้อเสนอแนะ / คำวิจารณ์": "สรุปข้อเสนอแนะหรือคำวิจารณ์จากผู้ชมเกี่ยวกับวิดีโอนี้",
-        "💬 your questions": "",
+        "📈 How do viewers feel? (Sentiment)": "Analyze the overall sentiment of the viewers toward the video (positive / negative / neutral), and provide example comments to support the conclusion.",
+        "💬 What do people talk about the most?": "From all the comments, identify the most frequently mentioned topic—whether in a positive or negative light.",
+        "🎯 Suggestions / Criticisms": "Summarize viewer suggestions or criticisms regarding the video.",
+        "🤔💭 Your other questions": "",
     }
 
     if "selected_prompt" not in st.session_state:
@@ -231,16 +241,16 @@ if df is not None and not df.empty:
         placeholder="Example: What are people saying about?"
     )
 
-    if st.button("🚀 วิเคราะห์ด้วย Gemini AI"):
+    if st.button("🚀 Analysis by Gemini AI"):
         if not question.strip():
-            st.warning("กรุณาพิมพ์คำถามก่อน")
+            st.warning("please select or input your question")
             st.stop()
 
-        with st.spinner("🔍 AI กำลังวิเคราะห์..."):
+        with st.spinner("🔍 AI Analyzing..."):
             try:
                 answer = ask_gemini(question.strip(), df)
-                st.success("✅ วิเคราะห์สำเร็จ")
-                st.subheader("📊 คำตอบจาก Gemini:")
+                st.success("✅ Analysis completed successfullyใ")
+                st.subheader("📊 Answer from Gemini:")
                 st.write(answer)
 
                 # Save history
@@ -255,4 +265,4 @@ if df is not None and not df.empty:
                 st.session_state.selected_prompt = ""
 
             except Exception as e:
-                st.error(f"❌ เกิดข้อผิดพลาดจาก Gemini: {e}")
+                st.error(f"❌ An error occurred from Gemini: {e}")
