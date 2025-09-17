@@ -29,7 +29,7 @@ streamlit run app.py
 ## 📁Project Structure
 ```
 ├── app.py                  # Main Streamlit app entry point
-├── comment_fetcher.py      # Import dataset from comment on youtube
+├── comment_fetcher.py      # Import dataset from comments on youtube
 └── .streamlit/
     └── secrets.toml
 ```
